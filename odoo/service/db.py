@@ -347,10 +347,10 @@ def restore_db(db, dump_file, copy=False, neutralize_database=False):
             [find_pg_tool(pg_cmd), '--dbname=' + db, *pg_args],
             env=exec_pg_environ(),
             stdout=subprocess.DEVNULL,
-            stderr=subprocess.STDOUT,
+            stderr=subprocess.PIPE
         )
         if r.returncode != 0:
-            raise Exception("Couldn't restore database")
+            raise Exception("Couldn't restore database: %s" % r.stderr.decode())
 
         registry = odoo.modules.registry.Registry.new(db)
         with registry.cursor() as cr:
